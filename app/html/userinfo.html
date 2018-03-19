@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-bar-nav~.mui-content {
+				padding-top: 30px;
+			}
+			
+			.mui-table-view-cell {
+				padding: 5px;
+			}
+			
+			#userface {
+				width: 50px;
+				height: 50px;
+				overflow: hidden;
+				border-radius: 50%;
+				margin-left: 10px;
+			}
+			
+			.mui-table-view-cell>.mui-btn {
+				right: initial;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">个人信息</h1>
+			<a style="line-height: 45px;" class="mui-pull-right">确认</a>
+		</header>
+		<div class="mui-content">
+
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<img id="userface" src="../images/face/10.jpg" />
+					<button type="button" class="mui-btn mui-btn-link">编辑头像</button>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="mui-input-row">
+						<label>昵称</label>
+						<input type="text" class="mui-input-clear" placeholder="请输入昵称">
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="mui-input-row">
+						<label>性别</label>
+						<input type="text" class="mui-input-clear" placeholder="请输入性别">
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="mui-input-row">
+						<label>用户ID</label>
+						<div style="position:absolute;left:113px; right: 110px; ">
+							<input style="border: none;" type="text" class="mui-input-clear" placeholder="用户ID" value="21">
+						</div>
+						<div style="position:absolute;right:10px; width: 580px;">
+							<button type="button" class="mui-btn mui-btn-blue">点击复制</button>
+						</div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="mui-input-row">
+						<label>个人介绍</label>
+						<input type="text" class="mui-input-clear" placeholder="说点什么吧">
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,14 @@
+.my_table tr{
+    text-align: center;
+}
+.my_table th{
+    text-align: center;
+
+}
+.my_table td{
+    line-height: 100%;
+
+}
+.btn{
+    padding:2px  5px;
+}

@@ -1,0 +1,306 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-content {
+				position: relative;
+			}
+			
+			#video_cam {
+				padding: 5px;
+			}
+			
+			#uploadimg {
+				width: 37%;
+				position: absolute;
+				top: 270px;
+				left: 5px;
+			}
+			
+			#content {
+				width: 57%;
+				float: right;
+				display: inline-block;
+				margin-top: 5px;
+				margin-right: 5px;
+				height: 271px;
+				border: none;
+				border-bottom: 1px solid #ccc;
+			}
+			
+			#share {
+				position: absolute;
+				top: 315px;
+				width: 97%;
+				height: 110%;
+				background-color: #fff;
+				margin: 5px;
+			}
+			
+			#share p {
+				margin-top: 10px;
+			}
+			
+			#share .share-top {
+				margin-left: 10px;
+			}
+			
+			.share-icon {
+				margin-top: 15px;
+				text-align: center;
+			}
+			
+			.share-icon img {
+				margin: 0 20px;
+			}
+			
+			.icon-name {
+				margin-left: 50px;
+			}
+			
+			.icon-padding {
+				padding-left: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a id="upload" class="mui-btn-link mui-pull-right">发布</a>
+			<h1 class="mui-title">视频发布</h1>
+		</header>
+		<div class="mui-content">
+			<img src="../images/add.png" width="40%" height="220px" id="video_cam" /><button id="uploadimg" type="button" class="mui-btn mui-btn-primary mui-btn-outlined">上传封面</button>
+			<textarea id="content" rows="" cols="" placeholder="说点什么吧"></textarea>
+			<div id="share">
+				<p class="share-top">分享到</p>
+				<div class="share-icon">
+					<img src="../images/QQ.svg" />
+					<img src="../images/weixin.svg" />
+					<img src="../images/weibo.svg" />
+				</div>
+				<p>
+					<span class="icon-name">腾讯QQ</span>
+					<span class="icon-name icon-padding">微信</span>
+					<span class="icon-name icon-padding">新浪微博</span>
+				</p>
+				<div class="share-icon">
+					<img src="../images/QBlog.svg" />
+					<img src="../images/friend.svg" />
+					<img src="../images/Qzone.svg" />
+				</div>
+				<p>
+					<span class="icon-name">腾讯微博</span>
+					<span class="icon-name">朋友圈</span>
+					<span style="padding-left: 5px;" class="icon-name">QQ空间</span>
+				</p>
+			</div>
+		</div>
+
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/ipConfig.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+			var userid = localStorage.getItem("userid");
+			// 扩展API加载完毕后调用onPlusReady回调函数 
+			document.addEventListener("plusready", onPlusReady, false);
+			// 扩展API加载完毕，现在可以正常调用扩展API 
+			function onPlusReady() {
+				console.log("plusready");
+			}
+
+			// 创建上传视频任务
+			var videourl = "";
+
+			function createUpload_video(filePath) {
+				var wt = plus.nativeUI.showWaiting("上传中...");
+				var task = plus.uploader.createUpload("http://" + ip + "/huoxiuapi/apis/uploadVideo.php", {
+						method: "POST"
+					},
+					function(t, status) {
+						// 上传完成
+						if(status == 200) {
+							//							alert("Upload success: " + t.responseText);
+							videourl = t.responseText;
+							mui.toast('视频上传成功!');
+							wt.close();
+						} else {
+							alert("Upload failed: " + status);
+						}
+					}
+				);
+				task.addFile(filePath, {
+					key: "file"
+				});
+				task.addData("string_key", "string_value");
+				//task.addEventListener( "statechanged", onStateChanged, false );
+				task.start();
+			}
+
+			document.getElementById("video_cam").addEventListener('tap', function() {
+				if(userid == null) {
+					mui.toast('请先登录！');
+					mui.openWindow({
+						'url': 'login.html',
+						'id': 'login.html',
+						style: {
+							top: '0', //新页面顶部的额位置
+							bottom: '0' //新页面底部的额位置
+						},
+						extras: {
+							//自定义扩展参数，可以用来处理页面间传值
+						}
+					});
+				} else {
+					// 调用原生android摄像头
+					var VIDEOZOOM = 200;
+					var MediaStore = plus.android.importClass("android.provider.MediaStore");
+					var Intent = plus.android.importClass("android.content.Intent");
+					// 导入后可以使用new方法创建类的示例对象
+					var intent = new Intent("android.media.action.VIDEO_CAPTURE");
+					intent.putExtra("android.intent.extra.videoQuality", 1); //0 means low quality, 1 means high quality
+					//intent.putExtra("android.provider.MediaStore.EXTRA_OUTPUT", url);
+					intent.putExtra("android.intent.extra.durationLimit", 17); //设置录像时间
+
+					var main = plus.android.runtimeMainActivity();
+					main.startActivityForResult(intent, VIDEOZOOM);
+					//获取返回参数
+					main.onActivityResult = function(requestCode, resultCode, data) {
+						var context = main;
+						plus.android.importClass(data);
+						var uri = data.getData();
+						var resolver = context.getContentResolver();
+						plus.android.importClass(resolver);
+						var cursor = resolver.query(uri, null, null, null, null);
+						plus.android.importClass(cursor);
+						cursor.moveToFirst();
+						var column = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+						// 获取录制的视频路径
+						var filePath = cursor.getString(column);
+						createUpload_video(filePath);
+					};
+				}
+
+			});
+
+			//创建上传封面任务
+			var headphoto = "";
+
+			function createUpload_index(filePath) {
+				var wt = plus.nativeUI.showWaiting("上传中...");
+				var task = plus.uploader.createUpload("http://" + ip + "/huoxiuapi/apis/uploadImg.php", {
+						method: "POST"
+					},
+					function(t, status) {
+						// 上传完成
+						if(status == 200) {
+							//							alert("Upload success: " + t.responseText);
+							headphoto = t.responseText;
+							mui.toast('封面上传成功!');
+							wt.close();
+						} else {
+							alert("Upload failed: " + status);
+						}
+					}
+				);
+				task.addFile(filePath, {
+					key: "file"
+				});
+				task.addData("string_key", "string_value");
+				//task.addEventListener( "statechanged", onStateChanged, false );
+				task.start();
+			}
+
+			//上传封面按钮
+			document.getElementById("uploadimg").addEventListener('tap', function() {
+				if(userid == null) {
+					mui.toast('请先登录！');
+					mui.openWindow({
+						'url': 'login.html',
+						'id': 'login.html',
+						style: {
+							top: '0', //新页面顶部的额位置
+							bottom: '0' //新页面底部的额位置
+						},
+						extras: {
+							//自定义扩展参数，可以用来处理页面间传值
+						}
+					});
+				} else {
+					//上传封面 从相册中选择图片
+					console.log("从相册中选择图片:");
+					plus.gallery.pick(function(path) {
+						document.getElementById("video_cam").src = path;
+						createUpload_index(path);
+					}, function(e) {
+						mui.toast('取消选择图片');
+					}, {
+						filter: "image"
+					});
+				}
+
+			});
+
+			//上传按钮
+			document.getElementById("upload").addEventListener('tap', function() {
+				var content = document.getElementById("content").value;
+				if(userid == null) {
+					mui.toast('请先登录！');
+					mui.openWindow({
+						'url': 'login.html',
+						'id': 'login.html',
+						style: {
+							top: '0', //新页面顶部的额位置
+							bottom: '0' //新页面底部的额位置
+						},
+						extras: {
+							//自定义扩展参数，可以用来处理页面间传值
+						}
+					});
+				} else if(headphoto == "") {
+					mui.toast('请上传封面！');
+				} else if(videourl == "") {
+					mui.toast('请上传视频！');
+				} else if(content == "") {
+					mui.toast('评论不能为空！');
+				} else {
+					var publictime = Date.parse(new Date())/1000;
+
+					mui.ajax("http://" + ip + "/huoxiuapi/apis/insertVideo.php", {
+						data: {
+							content: content,
+							headphoto: headphoto,
+							videourl: videourl,
+							userid: userid,
+							publictime: publictime
+						},
+						type: 'post',
+						success: function(data) {
+							if(data == "1") {
+								document.getElementById("video_cam").src = "../images/add.png";
+								videourl = "";
+								headphoto = "";
+								document.getElementById("content").value = "";
+								mui.toast('发布成功！');
+							} else {
+								mui.toast('发布失败，情重新发布！');
+							}
+
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							console.log(type);
+						}
+					});
+				}
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-bar-nav {
+				background-color: rgba(0, 0, 0, 0);
+				-webkit-box-shadow: none;
+				box-shadow: none;
+			}
+			
+			.mui-content img {
+				width: 100%;
+				margin-top: -45px;
+			}
+			
+			#userface {
+				width: 70px;
+				height: 70px;
+				border-radius: 50%;
+				margin-right: 10px;
+				margin-top: -40px;
+			}
+			
+			#update {
+				margin-top: 10px;
+				width: 90%;
+			}
+			
+			.mui-media,
+			.mui-table-view-cell {
+				overflow: initial !important;
+			}
+			
+			#photo-num {
+				margin-top: 10px;
+				color: #333;
+				text-align: center;
+				font-size: 18px;
+			}
+			
+			.mui-table-view-cell>a:not(.mui-btn) {
+				padding-bottom: 50px;
+				overflow: initial;
+			}
+			
+			#photos {
+				padding: 0 5px;
+				display: flex;
+				justify-content: space-between;
+				flex-wrap: wrap;
+			}
+			
+			.photo-box {
+				width: 32%;
+			}
+			
+			.photo-box img {
+				width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">个人中心</h1>
+		</header>
+		<div class="mui-content">
+			<img src="../images/resource/images/dota-23.jpg" />
+		</div>
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;">
+					<img id="userface" class="mui-pull-left" src="../images/userNone.svg">
+					<div class="mui-media-body">
+						<label id="username">用户名</label>
+						<p id="mark" class="mui-ellipsis">请先登录</p>
+					</div>
+				</a>
+				<button id="update" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">编辑个人资料</button>
+				<p id="photo-num"><b>个人作品</b></p>
+			</li>
+
+		</ul>
+
+		<div id="photos">
+
+		</div>
+
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/ipConfig.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		mui.init({
+			swipeBack: true //启用右滑关闭功能
+		});
+
+		var userid = localStorage.getItem("userid");
+
+		//查询用户信息
+		mui.post('http://' + ip + '/huoxiuapi/apis/getOneUser.php', {
+			userid: userid
+		}, function(data) {
+			var userface = localStorage.getItem("thumbnail");
+			var username = localStorage.getItem("username");
+			//				alert(data[0].userid);
+			document.getElementById("userface").src = 'http://' + ip + '/huoxiuapi/_doc/upload/face/' + userface;
+			document.getElementById("username").innerText = username;
+			document.getElementById("mark").innerText = data[0].mark;
+
+		}, 'json');
+
+		//			查询用户发布视频信息
+		mui.post('http://' + ip + '/huoxiuapi/apis/getUserVideos.php', {
+			userid: userid
+		}, function(data) {
+
+			var username = localStorage.getItem("username");
+			var userface = localStorage.getItem("thumbnail");
+			userface = 'http://' + ip + '/huoxiuapi/_doc/upload/face/' + userface;
+			for(var i = 0; i < data.length; i++) {
+				document.getElementById("photos").innerHTML += "\
+					<div class='photo-box' \
+						videoid='" + data[i].videoid + "' videourl='http://10.2.43.19/huoxiuapi/_doc/upload/video/" + data[i].videourl + "' \
+						username='" + username + "' userface='" + userface + "' \
+						like='" + data[i].likes + "' \
+						headphoto='" + data[i].headphoto + "'>\
+							<img src='http://" + ip + "/huoxiuapi/_doc/upload/index/" + data[i].headphoto + "'/>\
+					</div>";
+			}
+		}, 'json');
+
+		mui("#photos").on('tap', '.photo-box', function() {
+			var videoid = this.getAttribute("videoid");
+			var videourl = this.getAttribute("videourl");
+			var likes = this.getAttribute("like");
+			var headphoto = this.getAttribute("headphoto");
+			var username = this.getAttribute("username");
+			var userface = this.getAttribute("userface");
+			//							alert(username);
+
+			mui.openWindow({
+				'url': 'video.html',
+				'id': 'video.html',
+				extras: {
+					thumbnail: userface,
+					videoid: videoid,
+					videourl: videourl,
+					likes: likes,
+					username: username,
+					headphoto: headphoto
+				}
+			});
+		});
+
+		document.getElementById("update").addEventListener("tap", function() {
+
+			mui.openWindow({
+					'url': 'userinfo.html',
+					'id': 'userinfo.html'
+				}),
+				show: {
+					autoShow: true, //页面loaded事件发生后自动显示，默认为true
+				},
+				waiting: {
+					autoShow: true, //自动显示等待框，默认为true
+					title: '正在加载...', //等待对话框上显示的提示内容
+					options: {}
+				}
+		});
+	</script>
+
+</html>

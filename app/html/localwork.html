@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			input[type=search] {
+				background-color: #fff;
+			}
+			
+			#photos {
+				padding: 0 5px;
+				display: flex;
+				justify-content: space-between;
+				flex-wrap: wrap;
+			}
+			
+			.photo-box {
+				width: 32%;
+			}
+			.photo-box img {
+				width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">本地作品集</h1>
+		</header>
+
+		<div class="mui-content mui-scroll-wrapper">
+
+			<div class="container">
+				<div class="mui-input-row mui-search">
+					<input type="search" class="mui-input-clear" placeholder="查找作品">
+				</div>
+			</div>
+			<!--<ul class="mui-table-view mui-grid-view mui-grid-9">
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a href="#">
+						<img src="../images/face/1.jpg" />
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a href="#">
+						<img src="../images/face/3.jpg" />
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a href="#">
+						<img src="../images/face/8.jpg" />
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a href="#">
+						<img src="../images/face/19.jpg" />
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a href="#">
+						<img src="../images/face/14.jpg" />
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a href="#">
+						<img src="../images/resource/images/dota-5.jpg" />
+					</a>
+				</li>
+			</ul>-->
+			
+			<div id="photos">
+				<div class="photo-box">
+					<a href="#"><img src="../images/face/10.jpg"/></a>
+				</div>
+				<div class="photo-box">
+					<a href="#"><img src="../images/face/10.jpg"/></a>
+				</div>
+				<div class="photo-box">
+					<a href="#"><img src="../images/face/10.jpg"/></a>
+				</div>
+				<div class="photo-box">
+					<a href="#"><img src="../images/face/10.jpg"/></a>
+				</div>
+				<div class="photo-box">
+					<a href="#"><img src="../images/face/10.jpg"/></a>
+				</div>
+				<div class="photo-box">
+					<a href="#"><img src="../images/face/10.jpg"/></a>
+				</div>
+			</div>
+
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+		</script>
+	</body>
+
+</html>

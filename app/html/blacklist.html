@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			input[type=search] {
+				background-color: #fff;
+			}
+			
+			.search-face {
+				border-radius: 50%;
+			}
+			
+			.mui-ellipsis {
+				width: 65%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- 页面标题 -->
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">黑名单</h1>
+		</header>
+		<div class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<!--这里放置真实显示的DOM内容-->
+
+				<ul id="inner" class="mui-table-view">
+					
+				</ul>
+			</div>
+
+		</div>
+
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/ipConfig.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+
+			var userid = localStorage.getItem("userid");
+			if(userid == null) {
+				document.getElementById('inner').innerHTML = '\
+						<li class="mui-table-view-cell mui-media">\
+							<div class="mui-media-body">\
+							<p style="text-align: center;">登录后才能查看黑名单哦！</p>\
+							</div>\
+						</li>\
+						';
+			} else {
+				//localStorage.setItem("ipaddress","10.2.43.19");
+				//var ip = localStorage.getItem("ipaddress");
+				//alert(ip);
+				//alert(userid);
+
+				mui.ajax('http://' + ip + '/huoxiuapi/apis/getRelation.php', {
+					data: {
+						userid: userid,
+						state: 0
+					},
+					dataType: 'json',
+					type: 'post',
+					timeout: 10000,
+					success: function(data) {
+						if(data == "") {
+							document.getElementById('inner').innerHTML = '\
+						<li class="mui-table-view-cell mui-media">\
+							<div class="mui-media-body">\
+							<p style="text-align: center;">你还没有拉黑的人</p>\
+							</div>\
+						</li>\
+						';
+						} else {
+							mui.each(data, function(key, value) {
+								//console.log(value.thumbnail);
+								document.getElementById('inner').innerHTML += '\
+						<li class="mui-table-view-cell mui-media">\
+							<a href="javascript:;">\
+								<img class="mui-media-object mui-pull-left search-face" src="http://' + ip + '/huoxiuapi/_doc/upload/face/' + value.thumbnail + '">\
+								<div class="mui-media-body">\
+									' + value.username + '\
+									<p class="mui-ellipsis">' + value.mark + '</p>\
+								</div>\
+							</a>\
+							<button whoid="' + value.whoid + '" type="button" class="mui-btn mui-btn-danger mui-btn-outlined removeBlack">移出黑名单</button>\
+							<input class="whoid" type="hidden" value="' + value.whoid + '"/>\
+						</li>\
+						';
+							});
+						}
+
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(type);
+					}
+				});
+
+//			document.getElementsByClassName("removeBlack").addEventListener('tap', removeBlack);
+//			
+//			function removeBlack(){
+//				var whoid = document.getElementsByClassName("removeBlack").getAttribute("whoid");
+//				alert(whoid);
+//				alert(this);
+//				mui.ajax('http://'+ip+'/huoxiuapi/apis/getRelation.php',{
+//					data:{
+//						userid:userid,
+//						whoid:whoid
+//					},
+//					type: 'post',
+//					success: function(data){
+//						
+//					}
+//				});
+//			}
+			}
+		</script>
+	</body>
+
+</html>

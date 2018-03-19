@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/common.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="js/wf/wf.css" />
+	</head>
+
+	<body>
+		<!-- 主界面菜单同时移动 -->
+		<!-- 侧滑导航根容器 -->
+		<div class="mui-off-canvas-wrap mui-draggable">
+			<!-- 主页面容器 -->
+			<div class="mui-inner-wrap">
+				<!-- 菜单容器 -->
+				<aside class="mui-off-canvas-left" id="offCanvasSide">
+					<div class="mui-scroll-wrapper">
+						<div class="mui-scroll">
+							<!-- 菜单具体展示内容 -->
+							<ul class="mui-table-view">
+								<li class="Sign">
+									<img src="images/Sign.svg" />
+									<span class="scroll-list-text">签到</span>
+								</li>
+								<li class="userInfo userface">
+									<img id="userface" src="images/userNone.svg" />
+								</li>
+								<li class="username">
+									<span><a id="login-or-reg">登录/注册</a></span>
+								</li>
+								<li id="search-btn" class="mui-table-view-cell">
+									<img src="images/search.svg" class="scroll-list-icon" />
+									<span class="scroll-list-text">查找</span>
+								</li>
+								<li id="black-list" class="mui-table-view-cell">
+									<img src="images/black.svg" class="scroll-list-icon" />
+									<span class="scroll-list-text">黑名单</span>
+								</li>
+								<li id="local-work" class="mui-table-view-cell">
+									<img src="images/photos.svg" class="scroll-list-icon" />
+									<span class="scroll-list-text">本地作品集</span>
+								</li>
+								<li class="mui-table-view-cell">
+									<img src="images/logout.svg" class="scroll-list-icon" />
+									<span class="scroll-list-text">退出登录</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</aside>
+				<!-- 主页面标题 -->
+				<header class="mui-bar mui-bar-nav">
+					<a class="mui-icon mui-action-menu mui-icon-bars mui-pull-left" href="#offCanvasSide"></a>
+					<h1 class="mui-title">标题</h1>
+				</header>
+
+				<!-- 主页面内容容器 -->
+				<div class="mui-content mui-scroll-wrapper">
+
+					<div class="mui-scroll">
+						<!--这里放置真实显示的DOM内容-->
+						<div class="container">
+							<div class="mui-input-row mui-search">
+								<input type="search" class="mui-input-clear" placeholder="搜索全部">
+							</div>
+							<div class="content"></div>
+							<div class='load-more'>加载更多</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="mui-off-canvas-backdrop"></div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/wf/wf.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			mui('.mui-scroll-wrapper').scroll({
+				deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+			});
+			window.addEventListener('updateuser', function(event){
+				document.getElementById("login-or-reg").innerText = event.detail.username;
+				document.getElementById("userface").src = event.detail.face;
+				document.getElementById("userface").removeEventListener('tap',login);
+				document.getElementById("login-or-reg").removeEventListener('tap',login);
+			});
+			
+			function login(){
+				mui.openWindow({
+					'url': 'html/login.html',
+					'id': 'login.html',
+					style: {
+						top: '0',//新页面顶部的额位置
+						bottom: '0'//新页面底部的额位置
+					},
+					extras:{
+				      //自定义扩展参数，可以用来处理页面间传值
+				    }
+				});
+			}
+			
+			//登录注册
+			document.getElementById("userface").addEventListener("tap", login);
+			document.getElementById("login-or-reg").addEventListener("tap", login);
+			document.getElementById("search-btn").addEventListener("tap", function() {
+				mui.openWindow({
+					'url': 'html/search.html',
+					'id': 'search.html'
+				});
+			});
+			document.getElementById("black-list").addEventListener("tap", function() {
+				mui.openWindow({
+					'url': 'html/blacklist.html',
+					'id': 'blacklist.html'
+				});
+			});
+			document.getElementById("local-work").addEventListener("tap", function() {
+				mui.openWindow({
+					'url': 'html/localwork.html',
+					'id': 'localwork.html'
+				});
+			}); //瀑布流
+			/**
+			 * Created by Administrator on 2015/10/25.
+			 */
+//			window.onload = function() {
+				
+				mui.get('http://10.2.43.19/huoxiuapi/apis/getVideos.php',{},function(data){
+						showList(data);
+				},'json'
+				);
+				
+//				var dataArr = [{
+//						picUrl: 'images/index/1.jpg',
+//						width: 500,
+//						height: 751
+//					},
+//					{
+//						picUrl: 'images/index/2.jpg',
+//						width: 500,
+//						height: 500
+//					},
+//					{
+//						picUrl: 'images/index/3.jpg',
+//						width: 500,
+//						height: 328
+//					},
+//					{
+//						picUrl: 'images/index/4.jpg',
+//						width: 500,
+//						height: 728
+//					},
+//					{
+//						picUrl: 'images/index/5.jpg',
+//						width: 500,
+//						height: 666
+//					},
+//					{
+//						picUrl: 'images/index/6.jpg',
+//						width: 500,
+//						height: 333
+//					},
+//					{
+//						picUrl: 'images/index/7.jpg',
+//						width: 210,
+//						height: 300
+//					},
+//					{
+//						picUrl: 'images/index/8.jpg',
+//						width: 500,
+//						height: 750
+//					}
+//				];
+
+				var contentDom = document.querySelector('.content'),
+					loadMoreDom = document.querySelector('.load-more'),
+					wtf = null;
+
+				//页面初始化数据
+//				showList();
+
+//				loadMoreDom.addEventListener("tap", function() {
+//					wtf.create(dataArr);
+//				});
+
+				function showList(data) {
+					contentDom.innerHTML = '';
+					wtf = new WaterFull('.content', {
+						type: 2,
+						urlField: 'picUrl'
+					});
+					wtf.create(data);
+				};
+//			};
+		</script>
+	</body>
+
+</html>

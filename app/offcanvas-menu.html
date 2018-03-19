@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="./css/mui.min.css">
+		<link href="css/common.css" rel="stylesheet" />
+		<style>
+			body {
+				background: url(images/40.jpg);
+				background-size: cover;
+			}
+			
+			.mui-content {
+				background-color: rgba(0, 0, 0, .4);
+				color: #fff;
+			}
+			
+			header.mui-bar {
+				display: none;
+			}
+			
+			.mui-bar-nav~.mui-content {
+				padding: 0;
+			}
+			
+			.title {
+				margin: 35px 15px 10px;
+			}
+			
+			.title+.content {
+				margin: 10px 15px 35px;
+				color: #bbb;
+				text-indent: 1em;
+				font-size: 14px;
+				line-height: 24px;
+			}
+			
+			.mui-table-view {
+				margin-bottom: 35px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="offCanvasSide" class="mui-content">
+			<div class="mui-scroll">
+				<!-- 菜单具体展示内容 -->
+				<ul class="mui-table-view">
+					<li class="Sign">
+						<img src="images/Sign.svg" />
+						<span class="scroll-list-text">签到</span>
+					</li>
+					<li class="userInfo userface">
+						<img id="userface" src="images/userNone.svg" />
+					</li>
+					<li class="username">
+						<span><a id="login-or-reg">登录/注册</a></span>
+						<p id="mark" style="color: #fff;"></p>
+					</li>
+					<li id="search-btn" class="mui-table-view-cell">
+						<img src="images/search.svg" class="scroll-list-icon" />
+						<span class="scroll-list-text">查找</span>
+					</li>
+					<li id="fans-list" class="mui-table-view-cell">
+						<img src="images/black.svg" class="scroll-list-icon" />
+						<span class="scroll-list-text">粉丝列表</span>
+					</li>
+					<li id="black-list" class="mui-table-view-cell">
+						<img src="images/black.svg" class="scroll-list-icon" />
+						<span class="scroll-list-text">黑名单列表</span>
+					</li>
+					<li id="local-work" class="mui-table-view-cell">
+						<img src="images/photos.svg" class="scroll-list-icon" />
+						<span class="scroll-list-text">本地作品集</span>
+					</li>
+					<li id="logout" class="mui-table-view-cell">
+						<img src="images/logout.svg" class="scroll-list-icon" />
+						<span class="scroll-list-text">退出登录</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script src="./js/mui.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init({
+				keyEventBind: {
+					backbutton: false,
+					menubutton: false
+				}
+			});
+			var userid = localStorage.getItem("userid");
+
+			//登录
+			function login() {
+				mui.openWindow({
+					'url': 'html/login.html',
+					'id': 'login.html',
+					style: {
+						top: '0', //新页面顶部的额位置
+						bottom: '0' //新页面底部的额位置
+					},
+					extras: {
+						//自定义扩展参数，可以用来处理页面间传值
+					}
+				});
+			}
+
+			//跳转至个人中心
+			function turnto_userindex() {
+				userIndex = plus.webview.getWebviewById('userindex.html');
+				mui.fire(userIndex, 'updateuserinfo', { //触发事件
+						username: document.getElementById("login-or-reg").value,
+						face: document.getElementById("userface").src,
+						mark: document.getElementById("mark").value
+					}),
+				mui.openWindow({
+					'url': 'html/userindex.html',
+					'id': 'userindex.html',
+					style: {
+						top: '0', //新页面顶部的额位置
+						bottom: '0' //新页面底部的额位置
+					},
+					extras: {
+						//自定义扩展参数，可以用来处理页面间传值
+					}
+				});
+			}
+
+			//登录成功，信息更新
+			window.addEventListener('updateuser', function(event) {
+				document.getElementById("login-or-reg").innerText = event.detail.username;
+				document.getElementById("userface").src = event.detail.face;
+				document.getElementById("mark").innerHTML = event.detail.mark;
+				document.getElementById("userface").removeEventListener('tap', login);
+				document.getElementById("login-or-reg").removeEventListener('tap', login);
+				document.getElementById("userface").addEventListener("tap", turnto_userindex);
+				document.getElementById("login-or-reg").addEventListener("tap", turnto_userindex);
+			});
+
+			//登录注册
+			document.getElementById("userface").addEventListener("tap", login);
+			document.getElementById("login-or-reg").addEventListener("tap", login);
+			document.getElementById("search-btn").addEventListener("tap", function() {
+				mui.openWindow({
+					'url': 'html/search.html',
+					'id': 'video.html'
+				});
+			});
+			document.getElementById("fans-list").addEventListener("tap", function() {
+				mui.openWindow({
+					'url': 'html/fans.html',
+					'id': 'fans.html'
+				});
+			});
+			document.getElementById("black-list").addEventListener("tap", function() {
+				mui.openWindow({
+					'url': 'html/blacklist.html',
+					'id': 'blacklist.html'
+				});
+			});
+			document.getElementById("local-work").addEventListener("tap", function() {
+				mui.openWindow({
+					'url': 'html/localwork.html',
+					'id': 'localwork.html'
+				});
+			});
+
+			document.getElementById("logout").addEventListener("tap", function() {
+				localStorage.clear();
+				document.getElementById("userface").src = "images/userNone.svg";
+				document.getElementById("login-or-reg").innerHTML = "登录/注册";
+				document.getElementById("mark").innerHTML = "";
+				document.getElementById("userface").removeEventListener('tap', turnto_userindex);
+				document.getElementById("login-or-reg").removeEventListener('tap', turnto_userindex);
+				document.getElementById("userface").addEventListener('tap', login);
+				document.getElementById("login-or-reg").addEventListener('tap', login);
+				mui.toast('退出登录成功！');
+			});
+			//获得侧滑主窗口webview对象
+			var main = null;
+			mui.plusReady(function() {
+				main = plus.webview.currentWebview().opener();
+			})
+
+			function closeMenu() {
+				mui.fire(main, "menu:swipeleft");
+			}
+			//优化显示出来的侧滑菜单，只需监听该菜单的左滑事件，然后将其关闭即可；在菜单上右滑，不做任何操作；
+			window.addEventListener("swipeleft", closeMenu);
+			mui.menu = closeMenu;
+		</script>
+	</body>
+
+</html>

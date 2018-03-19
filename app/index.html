@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="./css/mui.min.css">
+		<link href="css/common.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="js/wf/wf.css" />
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+				/*background-color: #333;*/
+			}
+			
+			p {
+				text-indent: 22px;
+			}
+			
+			span.mui-icon {
+				font-size: 14px;
+				color: #007aff;
+				margin-left: -15px;
+				padding-right: 10px;
+			}
+			
+			.like-icon {
+				width: 22px !important;
+				height: 22px !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-menu mui-icon mui-icon-bars mui-pull-left"></a>
+			<a id="updatevideo" class="mui-action-menu mui-icon mui-icon-videocam mui-pull-right"></a>
+			<h1 class="mui-title">火秀小视频</h1>
+		</header>
+		<!--下拉刷新容器-->
+		<div id="pullrefresh" class="mui-content">
+			<!--数据列表-->
+			<div class="mui-table-view mui-table-view-chevron">
+				<div class="content"></div>
+			</div>
+		</div>
+	</body>
+	<script src="./js/mui.min.js"></script>
+	<script src="js/wf/wf.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/ipConfig.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		window.onload = function() {
+			//		var ip = "";
+
+			// 扩展API加载完毕后调用onPlusReady回调函数 
+			document.addEventListener("plusready", onPlusReady, false);
+			// 扩展API加载完毕，现在可以正常调用扩展API 
+			function onPlusReady() {
+				console.log("plusready");
+				//			plus.nativeUI.prompt("提示：如果IP配置不正确将导致程序整体无法运行", function(e) {
+				//				ip = e.value;
+				//				localStorage.setItem("ipaddress", ip);
+				//				alert(localStorage.getItem("ipaddress"));
+				//			}, "IP", "请输入当前IP地址", ["确定"]);
+			}
+
+			//		while(ip) {
+
+			document.getElementById("updatevideo").addEventListener("tap", function() {
+				mui.openWindow({
+					'url': 'html/updatevideo.html',
+					'id': 'blacklist.html'
+				});
+			});
+			var main, menu, mask = mui.createMask(_closeMenu);
+			var showMenu = false,
+				mode = 'menu-move';
+
+			if(!mui.os.android) {
+				//整体滑动暂不支持android手机，因为两个页面的移动动画，无法保证同步性；
+//				document.getElementById("move-togger").classList.remove('mui-hidden');
+				var spans = document.querySelectorAll('.android-only');
+				for(var i = 0, len = spans.length; i < len; i++) {
+					spans[i].style.display = "none";
+				}
+			}
+
+			mui.init({
+				swipeBack: false,
+				beforeback: back,
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: { //下拉刷新
+						style: 'circle',
+						callback: pulldownRefresh
+					},
+					up: { //上拉加载
+						auto: true,
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+
+			var page = 1;
+			function pullupRefresh() {
+				console.log("上拉加载");
+				mui.ajax('http://' + ip + '/huoxiuapi/apis/getVideos.php', {
+					data: {
+						page: page
+					},
+					dataType: 'json',
+					type: 'post',
+					success: function(data) {
+//						alert(data);
+						showList(page, data);
+						mui(".content").on('tap', '.wf-item-2', function() {
+							var videoid = this.getAttribute("videoid");
+							var videourl = this.getAttribute("videourl");
+							var likes = this.getAttribute("like");
+							var thumbnail = this.getAttribute("thumbnail");
+							var headphoto = this.getAttribute("headphoto");
+							var username = this.getAttribute("username");
+//							alert(username);
+							mui.openWindow({
+								'url': 'html/video.html',
+								'id': 'blacklist.html',
+								extras:{
+									thumbnail: thumbnail,
+									videoid: videoid,
+									videourl: videourl,
+									likes: likes,
+									username: username,
+									headphoto: headphoto
+								}
+							});
+						});
+						//停掉加载状态
+						page++;
+						mui("#pullrefresh").pullRefresh().endPullup(data == "2"); //如果传进一个true 则表示没有数据了 停掉Pullup
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(type);
+						console.log(errorThrown);
+					}
+				});
+			}
+
+			var contentDom = document.querySelector('.content'),
+				wtf = null;
+
+			//页面初始化数据
+			function showList(page, data) {
+				if(page < 2) {
+					contentDom.innerHTML = '';
+					wtf = new WaterFull('.content', {
+						type: 2,
+						urlField: 'picUrl',
+						videoid: 'videoid'
+					});
+				}
+				wtf.create(data);
+			};
+
+			function addData() {
+				mui.ajax('http://' + ip + '/huoxiuapi/apis/getVideos.php', {
+					data: {
+						page: 1
+					},
+					dataType: 'json',
+					type: 'post',
+					success: function(data) {
+						page = 1;
+						showList(page, data);
+
+					},
+					error: function(xhr, type, errorThrown) {
+						//异常处理；
+						console.log(type);
+						console.log(errorThrown);
+					}
+				});
+			}
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				console.log("下拉刷新");
+				setTimeout(function() {
+					addData();
+					mui('#pullrefresh').pullRefresh().endPulldown(); //如果传进一个true 则表示没有数据了 停掉Pulldown
+					page=2;
+					mui("#pullrefresh").pullRefresh().refresh(true);
+					pullRefresh();
+					mui.toast("刷新成功");
+				}, 1500);
+			}
+
+			function back() {
+				if(showMenu) {
+					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
+					closeMenu();
+					return false;
+				} else {
+					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
+					menu.close('none');
+					return true;
+				}
+			}
+			//plusReady事件后，自动创建menu窗口；
+			mui.plusReady(function() {
+				main = plus.webview.currentWebview();
+				//setTimeout的目的是等待窗体动画结束后，再执行create webview操作，避免资源竞争，导致窗口动画不流畅；
+				setTimeout(function() {
+					//侧滑菜单默认隐藏，这样可以节省内存；
+					menu = mui.preload({
+						id: 'offcanvas-menu',
+						url: 'offcanvas-menu.html',
+						styles: {
+							left: 0,
+							width: '70%',
+							zindex: 9997
+						}
+					});
+				}, 300);
+
+			});
+			/**
+			 * 显示菜单菜单
+			 */
+			function openMenu() {
+				if(!showMenu) {
+					//侧滑菜单处于隐藏状态，则立即显示出来；
+					//显示完毕后，根据不同动画效果移动窗体；
+					menu.show('none', 0, function() {
+						switch(mode) {
+							case 'main-move':
+								//主窗体开始侧滑；
+								main.setStyle({
+									left: '70%',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+							case 'menu-move':
+								menu.setStyle({
+									left: '0%',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+							case 'all-move':
+								main.setStyle({
+									left: '70%',
+									transition: {
+										duration: 150
+									}
+								});
+								menu.setStyle({
+									left: '0%',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+						}
+					});
+					//显示遮罩
+					mask.show();
+					showMenu = true;
+				}
+			}
+			/**
+			 * 关闭侧滑菜单
+			 */
+			function closeMenu() {
+				_closeMenu();
+				//关闭遮罩
+				mask.close();
+			}
+
+			/**
+			 * 关闭侧滑菜单（业务部分）
+			 */
+			function _closeMenu() {
+				if(showMenu) {
+					//关闭遮罩；
+					switch(mode) {
+						case 'main-move':
+							//主窗体开始侧滑；
+							main.setStyle({
+								left: '0',
+								transition: {
+									duration: 150
+								}
+							});
+							break;
+						case 'menu-move':
+							//主窗体开始侧滑；
+							menu.setStyle({
+								left: '-70%',
+								transition: {
+									duration: 150
+								}
+							});
+							break;
+						case 'all-move':
+							//主窗体开始侧滑；
+							main.setStyle({
+								left: '0',
+								transition: {
+									duration: 150
+								}
+							});
+							//menu页面同时移动
+							menu.setStyle({
+								left: '-70%',
+								transition: {
+									duration: 150
+								}
+							});
+
+							break;
+					}
+
+					//等窗体动画结束后，隐藏菜单webview，节省资源；
+					setTimeout(function() {
+						menu.hide();
+					}, 200);
+					//改变标志位
+					showMenu = false;
+				}
+			}
+
+			//变换侧滑动画移动效果；
+			mui('.mui-input-group').on('change', 'input', function() {
+				if(this.checked) {
+					switch(this.value) {
+						case 'main-move':
+							//仅主窗口移动的时候，menu页面的zindex值要低一点；
+							menu.setStyle({
+								left: '0',
+								zindex: 9997
+							});
+							if(mode == 'all-move') {
+								menu.setStyle({
+									left: '0%'
+								});
+							}
+							mode = 'main-move';
+							break;
+						case 'menu-move':
+							menu.setStyle({
+								left: '-70%',
+								zindex: 9999
+							});
+							if(mode == 'all-move') {
+								menu.setStyle({
+									left: '0%'
+								});
+							}
+							mode = 'menu-move';
+							break;
+						case 'all-move':
+							//切换为整体移动
+							//首先改变移动标志
+							slideTogether = true;
+							//变换menu界面初始化位置，整体移动时，Menu界面left需要在-70%的地方；
+							menu.setStyle({
+								left: '-70%'
+							});
+							mode = 'all-move';
+							break;
+					}
+				}
+			});
+
+			//点击左上角图标，打开侧滑菜单；
+			document.querySelector('.mui-icon-bars').addEventListener('tap', openMenu);
+			//在android4.4中的swipe事件，需要preventDefault一下，否则触发不正常
+			//故，在dragleft，dragright中preventDefault
+			window.addEventListener('dragright', function(e) {
+				e.detail.gesture.preventDefault();
+			});
+			window.addEventListener('dragleft', function(e) {
+				e.detail.gesture.preventDefault();
+			});
+			//主界面向右滑动，若菜单未显示，则显示菜单；否则不做任何操作；
+			window.addEventListener("swiperight", openMenu);
+			//主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
+			window.addEventListener("swipeleft", closeMenu);
+			//menu页面向左滑动，关闭菜单；
+			window.addEventListener("menu:swipeleft", closeMenu);
+
+			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+			mui.menu = function() {
+				if(showMenu) {
+					closeMenu();
+				} else {
+					openMenu();
+				}
+			}
+
+			//		}
+		}
+	</script>
+
+</html>

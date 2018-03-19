@@ -1,0 +1,217 @@
+{
+  "index.html": {
+    "href": "index.html",
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "fonts/mui.ttf",
+      "css/common.css",
+      "images/face/1 (1).jpg",
+      "images/face/userNone.svg",
+      "images/face/Sign.svg",
+      "images/userNone.svg",
+      "images/Sign.svg",
+      "images/search.svg",
+      "images/black.svg",
+      "images/photos.svg",
+      "images/logout.svg",
+      "images/index/8.jpg",
+      "images/index/4.jpg",
+      "images/index/6.jpg",
+      "js/wf/wf.css",
+      "images/index/3.jpg",
+      "images/index/1.jpg",
+      "js/wf/wf.js",
+      "images/index/7.jpg",
+      "images/index/2.jpg",
+      "images/index/5.jpg",
+      "images/face/1.jpg",
+      "js/ipConfig.js",
+      "images/heart-line.svg"
+    ],
+    "refer": [
+      "html/login.html",
+      "html/search.html",
+      "html/blacklist.html",
+      "html/localwork.html",
+      "offcanvas-menu.html",
+      "html/updatevideo.html",
+      "html/video.html"
+    ],
+    "priority": 0
+  },
+  "main.html": {
+    "resources": [
+      "js/app.js",
+      "js/mui.min.js",
+      "css/mui.min.css"
+    ],
+    "refer": []
+  },
+  "login.html": {
+    "resources": [
+      "js/app.js",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "js/mui.enterfocus.js"
+    ],
+    "refer": [
+      "main.html",
+      "forget_password.html",
+      "reg.html"
+    ]
+  },
+  "forget_password.html": {
+    "resources": [
+      "css/mui.min.css",
+      "css/style.css"
+    ]
+  },
+  "reg.html": {
+    "resources": [
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "css/style.css"
+    ]
+  },
+  "html/login.html": {
+    "resources": [
+      "images/logo.png",
+      "css/mui.min.css",
+      "css/common.css",
+      "php/login.php",
+      "images/weibo.svg",
+      "images/QQ.svg",
+      "images/weixin.svg"
+    ],
+    "refer": [
+      "html/reg.html"
+    ]
+  },
+  "html/reg.html": {
+    "resources": [
+      "css/common.css",
+      "css/mui.min.css"
+    ]
+  },
+  "html/search.html": {
+    "resources": [
+      "css/mui.min.css",
+      "images/face/3.jpg",
+      "images/face/2.jpg",
+      "css/common.css",
+      "images/face/1.jpg"
+    ]
+  },
+  "html/blacklist.html": {
+    "resources": [
+      "images/face/3.jpg",
+      "images/face/4.jpg",
+      "images/face/2.jpg",
+      "css/mui.min.css",
+      "images/face/5.jpg",
+      "images/face/6.jpg",
+      "images/face/1.jpg"
+    ]
+  },
+  "html/localwork.html": {
+    "resources": [
+      "images/resource/images/dota-3.jpg",
+      "images/resource/images/dota-5.jpg",
+      "images/resource/images/dota-4.jpg",
+      "images/resource/images/dota-1.jpg",
+      "images/resource/images/dota-2.jpg",
+      "css/mui.min.css",
+      "images/resource/images/dota-6.jpg",
+      "images/face/3.jpg",
+      "images/face/15.jpg",
+      "images/face/8.jpg",
+      "images/face/19.jpg",
+      "images/face/14.jpg",
+      "images/face/10.jpg"
+    ]
+  },
+  "offcanvas-menu.html": {
+    "resources": [
+      "css/mui.min.css",
+      "images/logout.svg",
+      "images/userNone.svg",
+      "images/black.svg",
+      "images/search.svg",
+      "images/photos.svg",
+      "images/Sign.svg",
+      "css/common.css",
+      "images/2.jpg",
+      "images/1.jpg",
+      "images/60.jpg",
+      "images/40.jpg"
+    ],
+    "refer": [
+      "html/login.html",
+      "html/blacklist.html",
+      "html/localwork.html",
+      "html/search.html",
+      "html/fans.html",
+      "html/userindex.html",
+      "html/video.html"
+    ]
+  },
+  "html/fans.html": {
+    "resources": [
+      "images/face/1.jpg",
+      "css/mui.min.css"
+    ]
+  },
+  "html/updatevideo.html": {
+    "resources": [
+      "css/mui.min.css",
+      "images/resource/images/dota-20.jpg",
+      "images/weibo.svg",
+      "images/QQ.svg",
+      "images/weixin.svg",
+      "images/QBlog.svg",
+      "images/friend.svg",
+      "images/Qzone.svg",
+      "images/add.png"
+    ],
+    "refer": [
+      "html/login.html"
+    ]
+  },
+  "html/userindex.html": {
+    "resources": [
+      "images/face/16.jpg",
+      "images/face/12.jpg",
+      "images/resource/images/dota-23.jpg",
+      "css/mui.min.css",
+      "images/face/10.jpg",
+      "images/userNone.svg",
+      "html/video.html"
+    ],
+    "refer": [
+      "html/userinfo.html",
+      "html/video.html"
+    ]
+  },
+  "html/userinfo.html": {
+    "resources": [
+      "css/mui.min.css",
+      "images/face/10.jpg"
+    ]
+  },
+  "html/video.html": {
+    "resources": [
+      "css/mui.min.css",
+      "images/play.svg",
+      "images/face/10.jpg",
+      "images/heart.svg",
+      "images/heartShow.svg",
+      "html/userindex.html",
+      "images/heart-red.svg",
+      "images/face/11.jpg"
+    ],
+    "refer": [
+      "html/userindex.html"
+    ]
+  }
+}
